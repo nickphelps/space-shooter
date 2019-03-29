@@ -1,4 +1,4 @@
-var game = new Phaser.Game(1000, 800, Phaser.AUTO, 'phaser-container', { preload: preload, create: create, update: update, render: render });
+var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-container', { preload: preload, create: create, update: update, render: render });
 function preload() {
 
     game.load.image('space', 'assets/background.png')
@@ -33,6 +33,7 @@ function create() {
     //ships bullets
     bullets = game.add.group()
     bullets.enableBody = true
+    bullets.exists = true
     bullets.physicsBodyType = Phaser.Physics.ARCADE
 
     //Creating 40 bullets
@@ -42,6 +43,7 @@ function create() {
 
     //creating ship
     ship = game.add.sprite(300, 300, 'ship')
+ 
     ship.anchor.set(0.5, 0.5)
 
     //physics settings
@@ -50,11 +52,13 @@ function create() {
     ship.body.drag.set(100)
     ship.body.maxVelocity.set(200)
     ship.enableBody = true
+    ship.exists = true
 
     //creating baddies    
     baddies = game.add.group()
     // baddies.physicsBodyType = Phaser.Physics.ARCADE
     baddies.enableBody = true
+    baddies.exists = true
 
     for (var i = 0; i < 50; i++) {
         //nmaking baddies pop up random
@@ -68,19 +72,6 @@ function create() {
     } //for loop
 
     scoreText = this.add.text(16,16, 'Score: 0', { fontSize: '32px', fill: '#4d4dff'})
-    
-    //checking to see if a bullet hits a baddie
-    // this.physics.add.overlap(bullets, baddies, hitBaddie, null, this)
-    
-    //Bullet Hits Baddie
-    console.log(bullets)
-    console.log(baddies)
-    console.log(ship)
-
-    game.physics.arcade.collide(bullets, baddies,collisionHandler, null, this)
-    // game.physics.arcade.collide()
-    //Ship hits baddie
-    game.physics.arcade.collide(baddies, ship, shipGetsHit, null, this)
 
     //  Game input
     cursors = game.input.keyboard.createCursorKeys()
@@ -90,14 +81,20 @@ function create() {
 
 function collisionHandler (bullet, baddie) {
     console.log('Entered')
-    // bullet.kill()
-    // baddie.kill()
+    bullet.kill()
+    baddie.kill()
+
+    //updating score 
+    score = score + 10
+    scoreText.setText('Score: ' + score)
+    // scoreText = scoreText + 10
 
 }
 
 function shipGetsHit (ship, baddie) {
     console.log('ship hits')
     ship.kill()
+    
 }
 
 function update() {
@@ -126,6 +123,11 @@ function update() {
     screenWrap(ship)
 
     bullets.forEachExists(screenWrap, this)
+
+    //bullet hits baddie
+    game.physics.arcade.collide(bullets, baddies, collisionHandler, null, this)
+    //Ship hits baddie
+    game.physics.arcade.collide(baddies, ship, shipGetsHit, null, this)
 
 }
 
