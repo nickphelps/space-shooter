@@ -17,6 +17,11 @@ var score = 0
 var scoreText
 var gameOverText
 var button
+var lifeIconOne
+var lifeIconTwo
+var lifeIconThree
+var lifes = 3
+var lifeText
 
 var bullets
 var bulletTime = 0
@@ -56,6 +61,16 @@ function create() {
     ship.body.maxVelocity.set(200)
     ship.enableBody = true
     ship.exists = true
+
+    //creating the lifes text
+    lifeText = this.add.text(575, 16, 'Lifes: ', {fontSize: '32px', fill :'#4d4dff'})
+
+    //making ship images for lifes
+    lifeIconOne = game.add.image(675,20,'ship')
+    lifeIconTwo = game.add.image(710, 20, 'ship')
+    lifeIconThree = game.add.image(745,20, 'ship')
+
+    
 
     makeBaddies()
 
@@ -107,30 +122,7 @@ function makeBaddies() {
     } //for loop
 }
 
-function collisionHandler (bullet, baddie) {
-    console.log('Entered')
-    bullet.kill()
-    baddie.kill()
 
-    //updating score 
-    score = score + 10
-    scoreText.setText('Score: ' + score)
-    // scoreText = scoreText + 10
-
-}
-
-function shipGetsHit (ship, baddie) {
-    console.log('ship hits')
-    //pauses game
-    game.physics.arcade.isPaused = (game.physics.arcade.isPaused) ? false : true;
-
-    ship.kill()
-
-    gameOverText.setText('GAME OVER!!!')
-
-
-
-}
 
 function actionOnClick (button, pointer, isDown) {
     console.log('button hit')
@@ -158,8 +150,13 @@ function resetGame() {
     // makeShip()
     // ship.enableBody = true
     ship.exists = true
-  
 
+    lifes = 3
+
+    lifeIconOne = game.add.image(675,20,'ship')
+    lifeIconTwo = game.add.image(710, 20, 'ship')
+    lifeIconThree = game.add.image(745,20, 'ship')
+  
 }
 
 
@@ -211,6 +208,42 @@ function fireBullet () {
         }
     }
 
+}
+
+function collisionHandler (bullet, baddie) {
+    console.log('Entered')
+    bullet.kill()
+    baddie.kill()
+
+    //updating score 
+    score = score + 10
+    scoreText.setText('Score: ' + score)
+    // scoreText = scoreText + 10
+
+}
+
+function shipGetsHit (ship, baddie) {
+
+    console.log(lifes)
+    if (lifes === 3) {
+        lifes = 2
+        lifeIconThree.kill()
+        // return lifes
+    }else if (lifes === 2) {
+        lifes = 1
+        lifeIconTwo.kill()
+        // return lifes
+    }else if (lifes === 1) {
+        lifes = 0
+        lifeIconOne.kill()
+
+         //pauses game
+        game.physics.arcade.isPaused = (game.physics.arcade.isPaused) ? false : true;
+
+        ship.kill()
+    
+        gameOverText.setText('GAME OVER!!!')
+    }
 }
 
 function screenWrap (sprite) {
