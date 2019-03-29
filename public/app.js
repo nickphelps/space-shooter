@@ -6,6 +6,7 @@ function preload() {
     game.load.image('ship', 'assets/ship.png')
     game.load.image('baddie', 'assets/space-baddie.png')
     game.load.image('purple-baddie', 'assets/space-baddie-purple.png')
+    game.load.image('button', 'assets/button-horizontal.png')
 
 }
 
@@ -14,6 +15,8 @@ var baddies
 var cursors
 var score = 0 
 var scoreText
+var gameOverText
+var button
 
 var bullets
 var bulletTime = 0
@@ -41,7 +44,7 @@ function create() {
     bullets.setAll('anchor.x', 0.5)
     bullets.setAll('anchor.y', 0.5)
 
-    //creating ship
+    // creating ship
     ship = game.add.sprite(300, 300, 'ship')
  
     ship.anchor.set(0.5, 0.5)
@@ -54,14 +57,46 @@ function create() {
     ship.enableBody = true
     ship.exists = true
 
-    //creating baddies    
+    makeBaddies()
+
+    scoreText = this.add.text(16,16, 'Score: 0', { fontSize: '32px', fill: '#4d4dff'})
+    gameOverText = this.add.text(game.world.centerX - 200 ,game.world.centerY - 60, '', {fontSize: '60px', fill: '#4d4dff'})
+
+    //  Game input
+    cursors = game.input.keyboard.createCursorKeys()
+    game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR ])
+
+    //adding game over buttin
+    button = game.add.button(game.world.centerX - 200 ,game.world.centerY - 60, 'button', actionOnClick, this, {fill: '#4d4dff'})
+    button.anchor.setTo(0.5,0.5)
+    // button.Color = Phaser.Color.RED
+
+}//create
+
+function makeShip() {
+      //creating ship
+      ship = game.add.sprite(300, 300, 'ship')
+ 
+      ship.anchor.set(0.5, 0.5)
+  
+      //physics settings
+      game.physics.enable(ship, Phaser.Physics.ARCADE)
+  
+      ship.body.drag.set(100)
+      ship.body.maxVelocity.set(200)
+      ship.enableBody = true
+      ship.exists = true
+}
+
+function makeBaddies() {
+
     baddies = game.add.group()
-    // baddies.physicsBodyType = Phaser.Physics.ARCADE
     baddies.enableBody = true
     baddies.exists = true
 
+    console.log('entered make')
     for (var i = 0; i < 50; i++) {
-        //nmaking baddies pop up random
+        //making baddies pop up random
         var s = baddies.create(game.world.randomX, game.world.randomY, 'baddie')
         s.name = 'alien' + s
         // baddies.collideWorldBounds = true
@@ -70,14 +105,7 @@ function create() {
         s.body.velocity.setTo(10 + Math.random() * 200, 10 + Math.random() * 200)
 
     } //for loop
-
-    scoreText = this.add.text(16,16, 'Score: 0', { fontSize: '32px', fill: '#4d4dff'})
-
-    //  Game input
-    cursors = game.input.keyboard.createCursorKeys()
-    game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR ])
-
-}//create
+}
 
 function collisionHandler (bullet, baddie) {
     console.log('Entered')
@@ -93,9 +121,47 @@ function collisionHandler (bullet, baddie) {
 
 function shipGetsHit (ship, baddie) {
     console.log('ship hits')
+    //pauses game
+    game.physics.arcade.isPaused = (game.physics.arcade.isPaused) ? false : true;
+
     ship.kill()
-    
+
+    gameOverText.setText('GAME OVER!!!')
+
+
+
 }
+
+function actionOnClick (button, pointer, isDown) {
+    console.log('button hit')
+    if (isDown) {
+        console.log('button button')
+        resetGame()
+    }
+}
+
+function resetGame() {
+    score = 0 
+    scoreText.setText('Score: ' + score)
+
+    gameOverText.setText('')
+
+    //reset lives
+
+    baddies.kill()
+
+    //unpause game
+    game.physics.arcade.isPaused = (game.physics.arcade.isPaused) ? false : true;
+
+    //make baddies
+    makeBaddies()
+    // makeShip()
+    // ship.enableBody = true
+    ship.exists = true
+  
+
+}
+
 
 function update() {
 
