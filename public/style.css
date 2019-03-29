@@ -1,0 +1,32 @@
+
+body {
+    background-image: url('/assets/background.png');
+}
+
+h1 {
+    color: #4d4dff;
+    font-size: 120px;
+    text-align: center;
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+#page-wrapper {
+    width:100%;
+    height:100vh;
+    position:relative;
+    
+}
+
+#phaser-container {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    width: 1000px;
+    border: 5px solid #4d4dff;
+}
