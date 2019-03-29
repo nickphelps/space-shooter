@@ -22,9 +22,14 @@ var lifeIconTwo
 var lifeIconThree
 var lifes = 3
 var lifeText
+var baddieCount = 0
+var levelCount = 1
 
 var bullets
 var bulletTime = 0
+
+const levelOne = 50
+const levelTwo = 100
 
 function create() {
 
@@ -63,7 +68,7 @@ function create() {
     ship.exists = true
 
     //creating the lifes text
-    lifeText = this.add.text(575, 16, 'Lifes: ', {fontSize: '32px', fill :'#4d4dff'})
+    lifeText = this.add.text(585, 16, 'Lifes: ', {fontSize: '32px', fill :'#4d4dff'})
 
     //making ship images for lifes
     lifeIconOne = game.add.image(675,20,'ship')
@@ -72,7 +77,7 @@ function create() {
 
     
 
-    makeBaddies()
+    makeBaddies(levelCount)
 
     scoreText = this.add.text(16,16, 'Score: 0', { fontSize: '32px', fill: '#4d4dff'})
     gameOverText = this.add.text(game.world.centerX - 200 ,game.world.centerY - 60, '', {fontSize: '60px', fill: '#4d4dff'})
@@ -85,6 +90,8 @@ function create() {
     button = game.add.button(game.world.centerX - 200 ,game.world.centerY - 60, 'button', actionOnClick, this, {fill: '#4d4dff'})
     button.anchor.setTo(0.5,0.5)
     // button.Color = Phaser.Color.RED
+
+    //if there are no more baddies call makeBaddies with more baddies
 
 }//create
 
@@ -103,14 +110,28 @@ function makeShip() {
       ship.exists = true
 }
 
-function makeBaddies() {
+function makeBaddies(levelCount) {
 
+    console.log(levelCount)
     baddies = game.add.group()
     baddies.enableBody = true
     baddies.exists = true
+    
+    //baddies per level
+    if (levelCount === 1) {
+        baddieCount = 0
+        baddieCount = baddieCount + 50
+    }
 
-    console.log('entered make')
-    for (var i = 0; i < 50; i++) {
+    if (levelCount === 2) {
+     baddieCount = baddieCount + 30
+ }
+
+    if (levelCount === 3) {
+        baddieCount = baddieCount + 20
+    }
+
+    for (var i = 0; i < baddieCount; i++) {
         //making baddies pop up random
         var s = baddies.create(game.world.randomX, game.world.randomY, 'baddie')
         s.name = 'alien' + s
@@ -125,9 +146,7 @@ function makeBaddies() {
 
 
 function actionOnClick (button, pointer, isDown) {
-    console.log('button hit')
     if (isDown) {
-        console.log('button button')
         resetGame()
     }
 }
@@ -135,6 +154,7 @@ function actionOnClick (button, pointer, isDown) {
 function resetGame() {
     score = 0 
     scoreText.setText('Score: ' + score)
+    levelCount = 1
 
     gameOverText.setText('')
 
@@ -146,7 +166,7 @@ function resetGame() {
     game.physics.arcade.isPaused = (game.physics.arcade.isPaused) ? false : true;
 
     //make baddies
-    makeBaddies()
+    makeBaddies(levelCount)
     // makeShip()
     // ship.enableBody = true
     ship.exists = true
@@ -156,6 +176,7 @@ function resetGame() {
     lifeIconOne = game.add.image(675,20,'ship')
     lifeIconTwo = game.add.image(710, 20, 'ship')
     lifeIconThree = game.add.image(745,20, 'ship')
+
   
 }
 
@@ -191,6 +212,17 @@ function update() {
     game.physics.arcade.collide(bullets, baddies, collisionHandler, null, this)
     //Ship hits baddie
     game.physics.arcade.collide(baddies, ship, shipGetsHit, null, this)
+    
+
+    if (baddies.countLiving() === 0 && levelCount === 1) {
+        levelCount = levelCount + 1
+        makeBaddies(levelCount)
+    }
+    if (baddies.countLiving() === 0 && levelCount === 2) {
+        levelCount = levelCount + 1
+        makeBaddies(levelCount)
+    } 
+
 
 }
 
@@ -211,7 +243,6 @@ function fireBullet () {
 }
 
 function collisionHandler (bullet, baddie) {
-    console.log('Entered')
     bullet.kill()
     baddie.kill()
 
@@ -243,6 +274,8 @@ function shipGetsHit (ship, baddie) {
         ship.kill()
     
         gameOverText.setText('GAME OVER!!!')
+        levelCount = 1
+        baddies.kill()
     }
 }
 
