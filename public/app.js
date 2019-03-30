@@ -22,9 +22,16 @@ var lifeIconTwo
 var lifeIconThree
 var lifes = 3
 var lifeText
+var baddieCount = 0
+var levelCount = 1
+var playAgainText
+var rectangle 
 
 var bullets
 var bulletTime = 0
+
+const levelOne = 50
+const levelTwo = 100
 
 function create() {
 
@@ -63,16 +70,14 @@ function create() {
     ship.exists = true
 
     //creating the lifes text
-    lifeText = this.add.text(575, 16, 'Lifes: ', {fontSize: '32px', fill :'#4d4dff'})
+    lifeText = this.add.text(585, 16, 'Lifes: ', {fontSize: '32px', fill :'#4d4dff'})
 
     //making ship images for lifes
     lifeIconOne = game.add.image(675,20,'ship')
     lifeIconTwo = game.add.image(710, 20, 'ship')
     lifeIconThree = game.add.image(745,20, 'ship')
 
-    
-
-    makeBaddies()
+    makeBaddies(levelCount)
 
     scoreText = this.add.text(16,16, 'Score: 0', { fontSize: '32px', fill: '#4d4dff'})
     gameOverText = this.add.text(game.world.centerX - 200 ,game.world.centerY - 60, '', {fontSize: '60px', fill: '#4d4dff'})
@@ -81,10 +86,24 @@ function create() {
     cursors = game.input.keyboard.createCursorKeys()
     game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR ])
 
-    //adding game over buttin
-    button = game.add.button(game.world.centerX - 200 ,game.world.centerY - 60, 'button', actionOnClick, this, {fill: '#4d4dff'})
+    //adding game over button
+    button = game.add.button(game.world.centerX - 23, game.world.centerY + 45, 'button', actionOnClick, this)
+    console.log(button)
+
     button.anchor.setTo(0.5,0.5)
-    // button.Color = Phaser.Color.RED
+    button.fixedToCamera = true
+    button.tint = 0xffffff
+    button.backgroundColor = '#ffffff'
+    button.alpha = 1
+
+
+    //making text over button
+    playAgainText = this.add.text(game.world.centerX - 70, game.world.centerY + 35, '', {fontSize: '23px', fill :'#65737e'})
+
+    //hiding all button elements
+    button.visible = false
+    button.exists = false
+
 
 }//create
 
@@ -103,14 +122,37 @@ function makeShip() {
       ship.exists = true
 }
 
-function makeBaddies() {
+function makeBaddies(levelCount) {
 
+    console.log(levelCount)
     baddies = game.add.group()
     baddies.enableBody = true
     baddies.exists = true
+    
+    //baddies per level
+    if (levelCount === 1) {
+        baddieCount = 0
+        baddieCount = baddieCount + 40
+    }
 
-    console.log('entered make')
-    for (var i = 0; i < 50; i++) {
+    if (levelCount === 2) {
+     baddieCount = baddieCount + 30
+
+ }
+
+    if (levelCount === 3) {
+        baddieCount = baddieCount + 40
+    }
+
+    if (levelCount === 4) {
+        baddieCount = baddieCount + 20
+    }
+
+    if (levelCount === 5) {
+        baddieCount = baddieCount + 25
+    }
+
+    for (var i = 0; i < baddieCount; i++) {
         //making baddies pop up random
         var s = baddies.create(game.world.randomX, game.world.randomY, 'baddie')
         s.name = 'alien' + s
@@ -122,12 +164,9 @@ function makeBaddies() {
     } //for loop
 }
 
-
-
 function actionOnClick (button, pointer, isDown) {
-    console.log('button hit')
     if (isDown) {
-        console.log('button button')
+        
         resetGame()
     }
 }
@@ -135,10 +174,12 @@ function actionOnClick (button, pointer, isDown) {
 function resetGame() {
     score = 0 
     scoreText.setText('Score: ' + score)
+    levelCount = 1
 
     gameOverText.setText('')
-
-    //reset lives
+    playAgainText.setText('')
+    rectangle.exists = false
+    button.exists = false
 
     baddies.kill()
 
@@ -146,17 +187,18 @@ function resetGame() {
     game.physics.arcade.isPaused = (game.physics.arcade.isPaused) ? false : true;
 
     //make baddies
-    makeBaddies()
-    // makeShip()
-    // ship.enableBody = true
+    makeBaddies(levelCount)
+
     ship.exists = true
 
+    //adding lifes
     lifes = 3
 
+    //showing the life incons
     lifeIconOne = game.add.image(675,20,'ship')
     lifeIconTwo = game.add.image(710, 20, 'ship')
     lifeIconThree = game.add.image(745,20, 'ship')
-  
+
 }
 
 
@@ -191,6 +233,25 @@ function update() {
     game.physics.arcade.collide(bullets, baddies, collisionHandler, null, this)
     //Ship hits baddie
     game.physics.arcade.collide(baddies, ship, shipGetsHit, null, this)
+    
+
+    if (baddies.countLiving() === 0 && levelCount === 1) {
+        levelCount = levelCount + 1
+        makeBaddies(levelCount)
+    }
+    if (baddies.countLiving() === 0 && levelCount === 2) {
+        levelCount = levelCount + 1
+        makeBaddies(levelCount)
+    } 
+    if (baddies.countLiving() === 0 && levelCount === 3) {
+        levelCount = levelCount + 1
+        makeBaddies(levelCount)
+    }
+    if (baddies.countLiving() === 0 && levelCount === 4) {
+        levelCount = levelCount + 1
+        makeBaddies(levelCount)
+    } 
+
 
 }
 
@@ -211,7 +272,6 @@ function fireBullet () {
 }
 
 function collisionHandler (bullet, baddie) {
-    console.log('Entered')
     bullet.kill()
     baddie.kill()
 
@@ -234,15 +294,34 @@ function shipGetsHit (ship, baddie) {
         lifeIconTwo.kill()
         // return lifes
     }else if (lifes === 1) {
-        lifes = 0
-        lifeIconOne.kill()
+    lifes = 0
+    lifeIconOne.kill()
 
-         //pauses game
-        game.physics.arcade.isPaused = (game.physics.arcade.isPaused) ? false : true;
+    //pauses game
+    game.physics.arcade.isPaused = (game.physics.arcade.isPaused) ? false : true;
 
-        ship.kill()
-    
-        gameOverText.setText('GAME OVER!!!')
+    //drawing rectangle over button
+    rectangle = game.add.graphics()
+    rectangle.beginFill(0x4d4dff);
+    rectangle.lineStyle(2, 0x65737e, 1)
+    rectangle.drawRect(game.world.centerX - 75, game.world.centerY + 25, 150, 50)
+    rectangle.lineStyle(3, 0xffffff, 1)
+    rectangle.endFill();
+
+    //showing all button elements
+    button.visible = true
+    button.exists = true
+    rectangle.visible = true
+    playAgainText.setText('PLAY AGAIN')
+    playAgainText.bringToTop()
+
+    ship.kill()
+
+    //showing GAME OVER
+    gameOverText.setText('GAME OVER!!!')
+    levelCount = 1
+    baddies.kill()
+    button.visible = true
     }
 }
 
