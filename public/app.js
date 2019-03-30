@@ -24,6 +24,8 @@ var lifes = 3
 var lifeText
 var baddieCount = 0
 var levelCount = 1
+var playAgainText
+var rectangle 
 
 var bullets
 var bulletTime = 0
@@ -84,12 +86,24 @@ function create() {
     cursors = game.input.keyboard.createCursorKeys()
     game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR ])
 
-    //adding game over buttin
-    button = game.add.button(game.world.centerX - 200 ,game.world.centerY - 60, 'button', actionOnClick, this, {fill: '#4d4dff'})
-    button.anchor.setTo(0.5,0.5)
-    button.color = Phaser.Color.RED
+    //adding game over button
+    button = game.add.button(game.world.centerX - 23, game.world.centerY + 45, 'button', actionOnClick, this)
+    console.log(button)
 
-    //if there are no more baddies call makeBaddies with more baddies
+    button.anchor.setTo(0.5,0.5)
+    button.fixedToCamera = true
+    button.tint = 0xffffff
+    button.backgroundColor = '#ffffff'
+    button.alpha = 1
+
+
+    //making text over button
+    playAgainText = this.add.text(game.world.centerX - 70, game.world.centerY + 35, '', {fontSize: '23px', fill :'#65737e'})
+
+    //hiding all button elements
+    button.visible = false
+    button.exists = false
+
 
 }//create
 
@@ -150,10 +164,9 @@ function makeBaddies(levelCount) {
     } //for loop
 }
 
-
-
 function actionOnClick (button, pointer, isDown) {
     if (isDown) {
+        
         resetGame()
     }
 }
@@ -164,8 +177,9 @@ function resetGame() {
     levelCount = 1
 
     gameOverText.setText('')
-
-    //reset lives
+    playAgainText.setText('')
+    rectangle.exists = false
+    button.exists = false
 
     baddies.kill()
 
@@ -174,17 +188,17 @@ function resetGame() {
 
     //make baddies
     makeBaddies(levelCount)
-    // makeShip()
-    // ship.enableBody = true
+
     ship.exists = true
 
+    //adding lifes
     lifes = 3
 
+    //showing the life incons
     lifeIconOne = game.add.image(675,20,'ship')
     lifeIconTwo = game.add.image(710, 20, 'ship')
     lifeIconThree = game.add.image(745,20, 'ship')
 
-  
 }
 
 
@@ -280,22 +294,34 @@ function shipGetsHit (ship, baddie) {
         lifeIconTwo.kill()
         // return lifes
     }else if (lifes === 1) {
-        lifes = 0
-        lifeIconOne.kill()
+    lifes = 0
+    lifeIconOne.kill()
 
-         //pauses game
-        game.physics.arcade.isPaused = (game.physics.arcade.isPaused) ? false : true;
+    //pauses game
+    game.physics.arcade.isPaused = (game.physics.arcade.isPaused) ? false : true;
 
-        ship.kill()
-    
-        gameOverText.setText('GAME OVER!!!')
-        levelCount = 1
-        baddies.kill()
+    //drawing rectangle over button
+    rectangle = game.add.graphics()
+    rectangle.beginFill(0x4d4dff);
+    rectangle.lineStyle(2, 0x65737e, 1)
+    rectangle.drawRect(game.world.centerX - 75, game.world.centerY + 25, 150, 50)
+    rectangle.lineStyle(3, 0xffffff, 1)
+    rectangle.endFill();
 
-        //would look at leaderboard and would add to board if in top ten
-        if (score > 1000) {
-            let username = prompt('Dude... you scored ' + score + '!' + 'Add your name to be added to leaderboard!')
-        }
+    //showing all button elements
+    button.visible = true
+    button.exists = true
+    rectangle.visible = true
+    playAgainText.setText('PLAY AGAIN')
+    playAgainText.bringToTop()
+
+    ship.kill()
+
+    //showing GAME OVER
+    gameOverText.setText('GAME OVER!!!')
+    levelCount = 1
+    baddies.kill()
+    button.visible = true
     }
 }
 
