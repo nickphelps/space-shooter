@@ -75,8 +75,6 @@ function create() {
     lifeIconTwo = game.add.image(710, 20, 'ship')
     lifeIconThree = game.add.image(745,20, 'ship')
 
-    
-
     makeBaddies(levelCount)
 
     scoreText = this.add.text(16,16, 'Score: 0', { fontSize: '32px', fill: '#4d4dff'})
@@ -89,7 +87,7 @@ function create() {
     //adding game over buttin
     button = game.add.button(game.world.centerX - 200 ,game.world.centerY - 60, 'button', actionOnClick, this, {fill: '#4d4dff'})
     button.anchor.setTo(0.5,0.5)
-    // button.Color = Phaser.Color.RED
+    button.color = Phaser.Color.RED
 
     //if there are no more baddies call makeBaddies with more baddies
 
@@ -120,15 +118,24 @@ function makeBaddies(levelCount) {
     //baddies per level
     if (levelCount === 1) {
         baddieCount = 0
-        baddieCount = baddieCount + 50
+        baddieCount = baddieCount + 40
     }
 
     if (levelCount === 2) {
      baddieCount = baddieCount + 30
+
  }
 
     if (levelCount === 3) {
+        baddieCount = baddieCount + 40
+    }
+
+    if (levelCount === 4) {
         baddieCount = baddieCount + 20
+    }
+
+    if (levelCount === 5) {
+        baddieCount = baddieCount + 25
     }
 
     for (var i = 0; i < baddieCount; i++) {
@@ -222,6 +229,14 @@ function update() {
         levelCount = levelCount + 1
         makeBaddies(levelCount)
     } 
+    if (baddies.countLiving() === 0 && levelCount === 3) {
+        levelCount = levelCount + 1
+        makeBaddies(levelCount)
+    }
+    if (baddies.countLiving() === 0 && levelCount === 4) {
+        levelCount = levelCount + 1
+        makeBaddies(levelCount)
+    } 
 
 
 }
@@ -276,6 +291,11 @@ function shipGetsHit (ship, baddie) {
         gameOverText.setText('GAME OVER!!!')
         levelCount = 1
         baddies.kill()
+
+        //would look at leaderboard and would add to board if in top ten
+        if (score > 1000) {
+            let username = prompt('Dude... you scored ' + score + '!' + 'Add your name to be added to leaderboard!')
+        }
     }
 }
 
