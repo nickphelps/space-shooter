@@ -1,4 +1,5 @@
-var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-container', { preload: preload, create: create, update: update, render: render });
+var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.AUTO, 'phaser-container', { preload: preload, create: create, update: update, render: render });
+
 function preload() {
 
     game.load.image('space', 'assets/background.png')
@@ -26,6 +27,8 @@ var baddieCount = 0
 var levelCount = 1
 var playAgainText
 var rectangle 
+
+var playerTwoText
 
 var bullets
 var bulletTime = 0
@@ -69,17 +72,20 @@ function create() {
     ship.enableBody = true
     ship.exists = true
 
+    //Creating Player 2 Text
+    playerTwoText = this.add.text(window.innerWidth - 250,10,'Player Two', { fontSize: '32px', fill: '#4d4dff'})
+
     //creating the lifes text
-    lifeText = this.add.text(585, 16, 'Lifes: ', {fontSize: '32px', fill :'#4d4dff'})
+    lifeText = this.add.text(window.innerWidth - 250, 86, 'Lifes: ', {fontSize: '32px', fill :'#4d4dff'})
 
     //making ship images for lifes
-    lifeIconOne = game.add.image(675,20,'ship')
-    lifeIconTwo = game.add.image(710, 20, 'ship')
-    lifeIconThree = game.add.image(745,20, 'ship')
+    lifeIconOne = game.add.image(window.innerWidth - 160,90,'ship')
+    lifeIconTwo = game.add.image(window.innerWidth - 125, 90, 'ship')
+    lifeIconThree = game.add.image(window.innerWidth - 90,90, 'ship')
 
     makeBaddies(levelCount)
 
-    scoreText = this.add.text(16,16, 'Score: 0', { fontSize: '32px', fill: '#4d4dff'})
+    scoreText = this.add.text(window.innerWidth - 250,45, 'Score: 0', { fontSize: '32px', fill: '#4d4dff'})
     gameOverText = this.add.text(game.world.centerX - 200 ,game.world.centerY - 60, '', {fontSize: '60px', fill: '#4d4dff'})
 
     //  Game input
@@ -195,9 +201,9 @@ function resetGame() {
     lifes = 3
 
     //showing the life incons
-    lifeIconOne = game.add.image(675,20,'ship')
-    lifeIconTwo = game.add.image(710, 20, 'ship')
-    lifeIconThree = game.add.image(745,20, 'ship')
+    lifeIconOne = game.add.image(window.innerWidth - 160,90,'ship')
+    lifeIconTwo = game.add.image(window.innerWidth - 125, 90, 'ship')
+    lifeIconThree = game.add.image(window.innerWidth - 90,90, 'ship')
 
 }
 

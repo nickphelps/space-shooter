@@ -27,8 +27,11 @@ h1 {
     margin-left: auto;
     margin-right: auto;
     display: block;
-    width: 810px;
-    border: 5px solid #4d4dff;
+    /* width: 810px; */
+    width: 100%;
+    /* border: 1px solid #4d4dff; */
+    /* border-top: 1px solid #4d4dff;
+    border-right: 1px solid #4d4dff; */
 }
 
 h2 {
