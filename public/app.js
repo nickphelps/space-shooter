@@ -26,9 +26,11 @@ var playerOneScore = 0
 var playerOneScoreText
 var playerTwoScore = 0
 var playerTwoScoreText
-
 var gameOverText
+
 var button
+var onePlayerButton
+var twoPlayerButton
 
 var playerOneLifeIconOne
 var playerOneLifeIconTwo
@@ -46,19 +48,29 @@ var playerTwoLifeText
 
 var baddieCount = 0
 var levelCount = 1
+
 var playAgainText
 var rectangle 
+
+var playerOneRectangle
+var playerOneButtonText
+var playerTwoRectangle
+var playerTwoButtonText
 
 var playerOneBullets
 var playerOneBulletTime = 0
 var playerTwoBullets
 var playerTwoBulletTime = 0
 
-//DO WE NEED THIS??
-const levelOne = 50
-const levelTwo = 100
+var twoPlayer = false
 
 function create() {
+
+    //One Player Button
+    onePlayerButton = game.add.button(game.world.centerX - 100, game.world.centerY + 45, 'button', onePlayerGame, this)
+
+    //Two Player Button
+    twoPlayerButton = game.add.button(game.world.centerX + 100, game.world.centerY + 45, 'button', twoPlayerGame, this)
 
     //This will run in Canvas mode, so let's gain a little speed and display
     game.renderer.clearBeforeRender = false
@@ -95,6 +107,7 @@ function create() {
     //CREATING PLAYER ONE SHIP
     playerOneShip = game.add.sprite(game.world.centerX - 100, game.world.centerY, 'ship')
     playerOneShip.anchor.set(0.5, 0.5)
+    playerOneShip.scale.setTo(1.75,1.75)
 
     //physics settings player one
     game.physics.enable(playerOneShip, Phaser.Physics.ARCADE)
@@ -108,8 +121,8 @@ function create() {
     playerTwoShip = game.add.sprite(game.world.centerX + 100, game.world.centerY, 'ship')
     playerTwoShip.anchor.set(0.5, 0.5)
     playerTwoShip.tint = 1 * 0x4c4cff //changing the color of ship two
-    // sprite.tint = Math.random() * 0xffffff;
-
+    playerTwoShip.scale.setTo(1.75,1.75)
+    
 
     //physics settings player two
     game.physics.enable(playerTwoShip, Phaser.Physics.ARCADE)
@@ -177,9 +190,16 @@ function create() {
     button.visible = false
     button.exists = false
 
-
 }//create
 
+function onePlayerGame () {
+    console.log('one player')
+
+}
+
+function twoPlayerGame () {
+    console.log('two player')
+}
 
 function makeBaddies(levelCount) {
 
@@ -219,6 +239,7 @@ function makeBaddies(levelCount) {
         s.body.collideWorldBounds = true
         s.body.bounce.setTo(0.8,0.8)
         s.body.velocity.setTo(10 + Math.random() * 200, 10 + Math.random() * 200)
+        s.scale.setTo(1.75,1.75)
 
     } //for loop
 }
@@ -228,6 +249,7 @@ function actionOnClick (button, pointer, isDown) {
         resetGame()
     }
 }
+
 
 function resetGame() {
     //Resetting Player One Score and Text
@@ -263,9 +285,9 @@ function resetGame() {
     playerTwoLifes = 3
 
     //showing the life incons
-    playerOneLifeIconOne = game.add.image(160,90,'ship')
-    playerOneLifeIconTwo = game.add.image(125, 90, 'ship')
-    playerOneLifeIconThree = game.add.image(90,90, 'ship')
+    playerOneLifeIconOne = game.add.image(140,90,'ship')
+    playerOneLifeIconTwo = game.add.image(175, 90, 'ship')
+    playerOneLifeIconThree = game.add.image(210,90, 'ship')
 
     playerTwoLifeIconOne = game.add.image(window.innerWidth - 160,90,'ship')
     playerTwoLifeIconOne.tint = 1 * 0x4c4cff 
@@ -280,7 +302,6 @@ function resetGame() {
 function update() {
 
      //player One Movement 
-console.log(playerOneCursors)
     if(game.input.keyboard.isDown(Phaser.Keyboard.W)) {
         game.physics.arcade.accelerationFromRotation(playerOneShip.rotation, 200, playerOneShip.body.acceleration)
     } else {
@@ -372,7 +393,7 @@ function playerOneFireBullet () {
         bullet = playerOneBullets.getFirstExists(false)
 
         if (bullet) {
-            bullet.reset(playerOneShip.body.x + 16, playerOneShip.body.y + 16)
+            bullet.reset(playerOneShip.body.x+26, playerOneShip.body.y+26)
             bullet.lifespan = 3000
             bullet.rotation = playerOneShip.rotation
             game.physics.arcade.velocityFromRotation(playerOneShip.rotation, 400, bullet.body.velocity)
@@ -389,7 +410,7 @@ function playerTwoFireBullet () {
         bullet = playerTwoBullets.getFirstExists(false)
 
         if (bullet) {
-            bullet.reset(playerTwoShip.body.x + 16, playerTwoShip.body.y + 16)
+            bullet.reset(playerTwoShip.body.x + 26, playerTwoShip.body.y + 26)
             bullet.lifespan = 3000
             bullet.rotation = playerTwoShip.rotation
             game.physics.arcade.velocityFromRotation(playerTwoShip.rotation, 400, bullet.body.velocity)
