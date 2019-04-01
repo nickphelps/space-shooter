@@ -137,7 +137,7 @@ function create() {
     playerOneLifeIconTwo = game.add.image(175, 90, 'ship')
     playerOneLifeIconThree = game.add.image(210,90, 'ship')
 
-    // playerOneLifeIconOne.kill()
+   
 
     //making ship images for lifes 
     playerTwoLifeIconOne = game.add.image(window.innerWidth - 160,90,'ship')
@@ -147,6 +147,9 @@ function create() {
     playerTwoLifeIconThree = game.add.image(window.innerWidth - 90,90, 'ship')
     playerTwoLifeIconThree.tint = 1 * 0x4c4cff 
 
+    // playerOneLifeIconOne.visible = false
+    // playerOneLifeIconTwo.visible = false
+    // playerTwoLifeIconOne.kill()
     makeBaddies(levelCount)
 
 
@@ -412,7 +415,7 @@ function playerOneShipGetsHit (ship, baddie) {
 
     // console.log(playerOneLifes)
     if (playerOneLifes === 3) {
-        console.log(playerOneLifeIconOne)
+        console.log(playerOneLifes)
         playerOneLifes = 2
         playerOneLifeIconOne.kill()
             // return lifes
@@ -420,9 +423,11 @@ function playerOneShipGetsHit (ship, baddie) {
         console.log(playerOneLifes)
 
         playerOneLifes = 1
-        playerOneLifeIconTwo.kill()
+        playerOneLifeIconTwo.visible = false
         // return lifes
     }else if (playerOneLifes === 1) {
+        console.log(playerOneLifes)
+
         playerOneLifes = 0
         playerOneLifeIconThree.kill()
 
@@ -438,12 +443,15 @@ function playerOneShipGetsHit (ship, baddie) {
         clickToStartText.setText('CLICK TO PLAY AGAIN')
         levelCount = 1
         baddies.kill()
+
+        // playerOneShip.anchor.set(0.5, 0.5)
+
     }
 }
 
 function playerTwoShipGetsHit (ship, baddie) {
 
-    if (playerTwoLifes === 3) {
+    if (playerTwoLifes == 3) {
         playerTwoLifes = 2
         playerTwoLifeIconThree.kill() 
         // return lifes
@@ -452,24 +460,23 @@ function playerTwoShipGetsHit (ship, baddie) {
         playerTwoLifeIconTwo.kill()
         // return lifes
     }else if (playerTwoLifes === 1) {
-    playerTwoLifes = 0
-    playerTwoLifeIconThree.kill()
+        playerTwoLifes = 0
+        playerTwoLifeIconOne.kill()
 
-    //pauses game
-    game.physics.arcade.isPaused = (game.physics.arcade.isPaused) ? false : true;
+        //pauses game
+        game.physics.arcade.isPaused = (game.physics.arcade.isPaused) ? false : true;
 
-    //ship one gets killed
-    playerTwoShip.kill()
+        //ship one gets killed
+        playerTwoShip.kill()
 
-    //showing GAME OVER
-    gameOverText.setText('GAME OVER!!!')
-    clickToStartText.visible = true
+        //showing GAME OVER
+        gameOverText.setText('GAME OVER!!!')
+        clickToStartText.visible = true
 
-    clickToStartText.setText('CLICK TO PLAY AGAIN')
+        clickToStartText.setText('CLICK TO PLAY AGAIN')
 
-    levelCount = 1
-    baddies.kill()
-    // button.visible = true
+        levelCount = 1
+        baddies.kill()
     }
 }
 
