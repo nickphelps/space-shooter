@@ -62,6 +62,7 @@ var playerTwoBullets
 var playerTwoBulletTime = 0
 
 var clickToStartText 
+var resetGameCount = 0
 
 function create() {
 
@@ -118,7 +119,6 @@ function create() {
     
     //physics settings player two
     game.physics.enable(playerTwoShip, Phaser.Physics.ARCADE)
-
     playerTwoShip.body.drag.set(100)
     playerTwoShip.body.maxVelocity.set(200)
     playerTwoShip.enableBody = true
@@ -137,9 +137,7 @@ function create() {
     playerOneLifeIconTwo = game.add.image(175, 90, 'ship')
     playerOneLifeIconThree = game.add.image(210,90, 'ship')
 
-   
-
-    //making ship images for lifes 
+    // //making ship images for lifes 
     playerTwoLifeIconOne = game.add.image(window.innerWidth - 160,90,'ship')
     playerTwoLifeIconOne.tint = 1 * 0x4c4cff 
     playerTwoLifeIconTwo = game.add.image(window.innerWidth - 125, 90, 'ship')
@@ -147,11 +145,7 @@ function create() {
     playerTwoLifeIconThree = game.add.image(window.innerWidth - 90,90, 'ship')
     playerTwoLifeIconThree.tint = 1 * 0x4c4cff 
 
-    // playerOneLifeIconOne.visible = false
-    // playerOneLifeIconTwo.visible = false
-    // playerTwoLifeIconOne.kill()
     makeBaddies(levelCount)
-
 
     //Score text
     playerOneScoreText = this.add.text(50,45, 'Score: 0', { fontSize: '32px', fill: '#4d4dff'})
@@ -171,7 +165,7 @@ function create() {
     playerTwoCursors = game.input.keyboard.createCursorKeys()
     game.input.keyboard.addKeyCapture([ Phaser.Keyboard.M ])
 
-    game.input.onDown.add(actionOnClick,this)
+    // game.input.onDown.add(actionOnClick,this)
 
     playAgainText = this.add.text(game.world.centerX - 70, game.world.centerY + 35, '', {fontSize: '23px', fill :'#65737e'})
 
@@ -192,7 +186,7 @@ function makeBaddies(levelCount) {
     //baddies per level
     if (levelCount === 1) {
         baddieCount = 0
-        baddieCount = baddieCount + 100
+        baddieCount = baddieCount + 3
     }
 
     if (levelCount === 2) {
@@ -231,6 +225,9 @@ function actionOnClick () {
 
 function resetGame() {
     //Resetting Player One Score and Text
+
+    resetGameCount = resetGameCount + 1
+
     playerOneScore = 0 
     playerOneScoreText.setText('Score: ' + playerOneScore)
 
@@ -255,22 +252,25 @@ function resetGame() {
     playerOneShip.exists = true
     playerTwoShip.exists = true
 
-
     //adding lifes
     playerOneLifes = 3
     playerTwoLifes = 3
 
-    //showing the life incons
-    playerOneLifeIconOne = game.add.image(140,90,'ship')
-    playerOneLifeIconTwo = game.add.image(175, 90, 'ship')
-    playerOneLifeIconThree = game.add.image(210,90, 'ship')
 
-    playerTwoLifeIconOne = game.add.image(window.innerWidth - 160,90,'ship')
-    playerTwoLifeIconOne.tint = 1 * 0x4c4cff 
-    playerTwoLifeIconTwo = game.add.image(window.innerWidth - 125, 90, 'ship')
-    playerTwoLifeIconTwo.tint = 1 * 0x4c4cff 
-    playerTwoLifeIconThree = game.add.image(window.innerWidth - 90,90, 'ship')
-    playerTwoLifeIconThree.tint = 1 * 0x4c4cff 
+    if (resetGameCount > 1) {
+    //showing the life incons
+    playerOneLifeIconOne.visible = true
+    playerOneLifeIconTwo.visible = true
+    playerOneLifeIconThree.visible = true
+
+    playerTwoLifeIconOne.visible = true
+    // playerTwoLifeIconOne.tint = 1 * 0x4c4cff 
+    playerTwoLifeIconTwo.visible = true
+    // playerTwoLifeIconTwo.tint = 1 * 0x4c4cff 
+    playerTwoLifeIconThree.visible = true
+    // playerTwoLifeIconThree.tint = 1 * 0x4c4cff 
+    }
+
 
 }
 
@@ -415,22 +415,16 @@ function playerOneShipGetsHit (ship, baddie) {
 
     // console.log(playerOneLifes)
     if (playerOneLifes === 3) {
-        console.log(playerOneLifes)
         playerOneLifes = 2
-        playerOneLifeIconOne.kill()
+        playerOneLifeIconOne.visible = false
             // return lifes
     }else if (playerOneLifes === 2) {
-        console.log(playerOneLifes)
-
         playerOneLifes = 1
         playerOneLifeIconTwo.visible = false
         // return lifes
     }else if (playerOneLifes === 1) {
-        console.log(playerOneLifes)
-
         playerOneLifes = 0
-        playerOneLifeIconThree.kill()
-
+        playerOneLifeIconThree.visible = false
         //pauses game
         game.physics.arcade.isPaused = (game.physics.arcade.isPaused) ? false : true;
 
@@ -451,17 +445,18 @@ function playerOneShipGetsHit (ship, baddie) {
 
 function playerTwoShipGetsHit (ship, baddie) {
 
+    console.log(playerTwoLifeIconTwo)
     if (playerTwoLifes == 3) {
         playerTwoLifes = 2
-        playerTwoLifeIconThree.kill() 
+        playerTwoLifeIconOne.visible = false
         // return lifes
     }else if (playerTwoLifes === 2) {
         playerTwoLifes = 1
-        playerTwoLifeIconTwo.kill()
+        playerTwoLifeIconTwo.visible = false
         // return lifes
     }else if (playerTwoLifes === 1) {
         playerTwoLifes = 0
-        playerTwoLifeIconOne.kill()
+        playerTwoLifeIconThree.visible = false
 
         //pauses game
         game.physics.arcade.isPaused = (game.physics.arcade.isPaused) ? false : true;
