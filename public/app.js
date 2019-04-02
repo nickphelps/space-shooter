@@ -11,6 +11,10 @@ function preload() {
     //loading Google WebFont Loader
     game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
 
+    //music 
+    game.load.audio('boden', ['assets/bodenstaendig_2000_in_rock_4bit.mp3'])
+
+
 }
 
 var titleText
@@ -61,6 +65,8 @@ var infoFont
 var baddieSpeed
 
 var clickToPlayText
+
+var music
 
 function create() {
 
@@ -176,6 +182,7 @@ function create() {
 
     levelIndicatorText.font = 'Press Start 2P'
 
+  
 }//create
 
 
@@ -333,6 +340,11 @@ function makeBaddies(levelCount) {
 }//make baddies
 
 function actionOnClick () {
+    music = game.add.audio('boden');
+
+    music.play();
+
+    console.log(music)
     hidingMainMenu()
     resetGame()
 }
