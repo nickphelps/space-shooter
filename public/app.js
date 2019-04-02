@@ -316,14 +316,14 @@ function makeBaddies(levelCount) {
             s.name = 'alien' + s
             s.body.collideWorldBounds = true
             s.body.bounce.setTo(0.8,0.8)
-            s.body.velocity.setTo(baddieSpeed + Math.random() * (200 + baddieSpeed), baddieSpeed + Math.random() * (200 + baddieSpeed))
+            s.body.velocity.setTo(baddieSpeed + Math.random() * (100 + baddieSpeed), baddieSpeed + Math.random() * (100 + baddieSpeed))
             s.scale.setTo(1.75,1.75)
         } else if (levelCount > 1) {
             var s = baddies.create(game.world.randomX, (game.world.randomY / (Math.floor(Math.random() * 4))), 'baddie')
             s.name = 'alien' + s
             s.body.collideWorldBounds = true
             s.body.bounce.setTo(0.8,0.8)
-            s.body.velocity.setTo(baddieSpeed + Math.random() * (200 + baddieSpeed), baddieSpeed + Math.random() * (200 + baddieSpeed))
+            s.body.velocity.setTo(baddieSpeed + Math.random() * (100 + baddieSpeed), baddieSpeed + Math.random() * (100 + baddieSpeed))
             s.scale.setTo(1.75,1.75)
         }
 
