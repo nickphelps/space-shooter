@@ -1,5 +1,3 @@
-
-
 var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.AUTO, 'phaser-container', { preload: preload, create: create, update: update, render: render });
 
 function preload() {
@@ -10,7 +8,12 @@ function preload() {
     game.load.image('baddie', 'assets/space-baddie.png')
     game.load.image('button', 'assets/button-horizontal.png')
 
+    //loading Google WebFont Loader
+    game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
+
 }
+
+var titleText
 
 var playerOneShip
 var playerTwoShip
@@ -63,6 +66,59 @@ var playerTwoBulletTime = 0
 
 var clickToStartText 
 var resetGameCount = 0
+
+var infoFont
+
+function createText() {
+
+    titleText = game.add.text(game.world.centerX, game.world.centerY - 175, "- SPACE SHOOTERS -");
+    titleText.anchor.setTo(0.5);
+
+    titleText.font = 'Press Start 2P';
+    titleText.fontSize = 60;
+
+    //  x0, y0 - x1, y1
+    grd = titleText.context.createLinearGradient(0, 0, 0, titleText.canvas.height);
+    grd.addColorStop(0, '#4d4dff');   
+    grd.addColorStop(1, '#004CB3');
+    titleText.fill = grd;
+
+    titleText.align = 'center';
+    titleText.stroke = '#fff';
+    titleText.strokeThickness = 1;
+    titleText.setShadow(3, 3, '#fff', 1);
+
+
+    //game instructions
+    controllerTextPlayerOne = game.add.text(game.world.centerX - (window.innerWidth / 4), game.world.centerY + 150, 'PLAYER ONE\nW - UP\nA - LEFT\nD - RIGHT\nF - SHOOT')
+    controllerTextPlayerTwo = game.add.text(game.world.centerX + (window.innerWidth / 4), game.world.centerY + 150, 'PLAYER TWO\n^ - UP\n> - RIGHT\n< - LEFT\nM - SHOOT')
+    controllerTextPlayerOne.anchor.setTo(0.5)
+    controllerTextPlayerTwo.anchor.setTo(0.5)
+    controllerTextPlayerOne.font = 'Audiowide'
+    controllerTextPlayerOne.fontSize = 35
+
+    controllerTextPlayerTwo.font = 'Audiowide'
+    controllerTextPlayerTwo.fontSize = 35
+
+    controllerTextPlayerOne.fill = '#fff'
+    controllerTextPlayerTwo.fill = '#fff'
+
+}
+
+
+WebFontConfig = {
+
+    //  'active' means all requested fonts have finished loading
+    //  We set a 1 second delay before calling 'createText'.
+    //  For some reason if we don't the browser cannot render the text the first time it's created.
+    active: function() { game.time.events.add(Phaser.Timer.SECOND, createText, this); },
+
+    //  The Google Fonts we want to load (specify as many as you like in the array)
+    google: {
+      families: ['Press Start 2P', 'Audiowide']
+    }
+
+};
 
 function create() {
 
@@ -125,12 +181,16 @@ function create() {
     playerTwoShip.exists = true
 
     //creating the lifes text
-    playerOneLifeText = this.add.text(50, 86, 'Lifes: ', { fontSize: '32px', fill :'#4d4dff' })
+    playerOneLifeText = this.add.text(50, 86, 'Lifes: ', { font: infoFont, fontSize: '32px', fill :'#4d4dff' })
+    // playerOneLifeText.font = infoFont
     playerTwoLifeText = this.add.text(window.innerWidth - 250,86, 'Lifes: ', { fontSize: '32px', fill: '#4d4dff' })
+    playerTwoLifeText.font = infoFont
 
     //Creating Player Text
-    playerOneText = this.add.text(50,10,'Player One', { fontSize: '32px', fill: '#4d4dff'})
+    playerOneText = this.add.text(50,10,'Player One', {fontSize: '32px', fill: '#4d4dff'})
+    playerOneText.font = infoFont
     playerTwoText = this.add.text(window.innerWidth - 250,10, 'Player Two', { fontSize: '32px', fill: '#4d4dff' })
+    playerTwoText.font = infoFont
 
     //making ship images for lifes
     playerOneLifeIconOne = game.add.image(140,90,'ship')
@@ -149,7 +209,9 @@ function create() {
 
     //Score text
     playerOneScoreText = this.add.text(50,45, 'Score: 0', { fontSize: '32px', fill: '#4d4dff'})
+    playerOneScoreText.font = infoFont
     playerTwoScoreText = this.add.text(window.innerWidth - 250, 45, 'Score: 0', { fontSize: '32px', fill: '#4d4dff'} )
+    playerTwoScoreText.font = infoFont
 
     //game over text
     gameOverText = this.add.text(game.world.centerX - 200 ,game.world.centerY - 60, '', {fontSize: '60px', fill: '#4d4dff'})
@@ -170,7 +232,8 @@ function create() {
     playAgainText = this.add.text(game.world.centerX - 70, game.world.centerY + 35, '', {fontSize: '23px', fill :'#65737e'})
 
     //click to start button
-    clickToStartText = game.add.text(game.world.centerX - 200, game.world.centerY - 150, '--CLICK TO START--', {font: "40px", fill: '#4d4dff', align: 'center' })
+    clickToStartText = game.add.text(game.world.centerX - 200, game.world.centerY - 150, '--CLICK TO PLAY AGAIN--', {font: "40px", fill: '#4d4dff', align: 'center' })
+    clickToStartText.exists = false
 
     game.physics.arcade.isPaused = true
     game.input.onDown.add(actionOnClick,this)
@@ -219,7 +282,7 @@ function makeBaddies(levelCount) {
 }
 
 function actionOnClick () {
-    clickToStartText.visible = false
+    clickToStartText.visible = true
     resetGame()
 }
 
