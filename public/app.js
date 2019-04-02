@@ -32,8 +32,6 @@ var playerTwoScore = 0
 var playerTwoScoreText
 var gameOverText
 
-// var button
-
 var playerOneLifeIconOne
 var playerOneLifeIconTwo
 var playerOneLifeIconThree
@@ -62,7 +60,7 @@ var infoFont
 
 var baddieSpeed
 
-var levelIndicatorText
+var clickToPlayText
 
 function create() {
 
@@ -247,7 +245,7 @@ function update() {
 
 
    if (baddies.countLiving() === 0 && levelCount === 1) {
-       levelCount = levelCount + 2
+       levelCount = levelCount + 1
 
        makeBaddies(levelCount)
    }
@@ -263,6 +261,32 @@ function update() {
        levelCount = levelCount + 1
        makeBaddies(levelCount)
    } 
+   if (baddies.countLiving() === 0 && levelCount === 5) {
+    levelCount = levelCount + 1
+    makeBaddies(levelCount)
+    } 
+    if (baddies.countLiving() === 0 && levelCount === 6) {
+        levelCount = levelCount + 1
+        makeBaddies(levelCount)
+    } 
+    if (baddies.countLiving() === 0 && levelCount === 7) {
+        levelCount = levelCount + 1
+        makeBaddies(levelCount)
+    } 
+    if (baddies.countLiving() === 0 && levelCount === 8) {
+        levelCount = levelCount + 1
+        makeBaddies(levelCount)
+    } 
+    if (baddies.countLiving() === 0 && levelCount === 9) {
+        levelCount = levelCount + 1
+        makeBaddies(levelCount)
+    } 
+    if (baddies.countLiving() === 0 && levelCount === 10) {
+        levelCount = levelCount + 1
+        makeBaddies(levelCount)
+    } 
+
+
 }//update
 
 
@@ -274,41 +298,17 @@ function makeBaddies(levelCount) {
 
     console.log(levelCount)
 
-    //baddies per level
-    if (levelCount === 1) {
-        baddieCount = 0
-        baddieCount = baddieCount + 5
-        baddieSpeed = 10
+    for (let i = 0; i < 11; i++) {
+        if (levelCount === 1) {
+            baddieCount = 0
+            baddieCount = baddieCount + 15
+            baddieSpeed = 20
+        } else if (levelCount === i) {
+            baddieCount = baddieCount + (baddieCount * 1.1)
+            baddieSpeed = baddieSpeed + (baddieSpeed * 1.1)
+        }
     }
 
-    if (levelCount === 2) {
-     baddieCount = baddieCount + 12
-     baddieSpeed = 20
-    }  
-
-    if (levelCount === 3) {
-        baddieCount = baddieCount + 20
-        baddieSpeed = 25
-    }
-
-    if (levelCount === 4) {
-        baddieCount = baddieCount + 30
-        baddieSpeed = 40
-    }
-
-    if (levelCount === 5) {
-        baddieCount = baddieCount + 50
-        baddieSpeed = 60
-    }
-
-    if (levelCount === 6) {
-        baddieCount = baddieCount + 75
-        baddieSpeed = 80
-    }
-    if (levelCount === 7) {
-        baddieCount = baddieCount + 100
-        baddieSpeed = 120
-    }
     for (var i = 0; i < baddieCount; i++) {
         //making baddies pop up random on top 25% of screen
         if (levelCount === 1 ) {
@@ -316,14 +316,14 @@ function makeBaddies(levelCount) {
             s.name = 'alien' + s
             s.body.collideWorldBounds = true
             s.body.bounce.setTo(0.8,0.8)
-            s.body.velocity.setTo(baddieSpeed + Math.random() * 200, baddieSpeed + Math.random() * 200)
+            s.body.velocity.setTo(baddieSpeed + Math.random() * (200 + baddieSpeed), baddieSpeed + Math.random() * (200 + baddieSpeed))
             s.scale.setTo(1.75,1.75)
         } else if (levelCount > 1) {
-            var s = baddies.create(game.world.randomX, (game.world.randomY / (Math.floor(Math.random() * 6))), 'baddie')
+            var s = baddies.create(game.world.randomX, (game.world.randomY / (Math.floor(Math.random() * 4))), 'baddie')
             s.name = 'alien' + s
             s.body.collideWorldBounds = true
             s.body.bounce.setTo(0.8,0.8)
-            s.body.velocity.setTo(baddieSpeed + Math.random() * 200, baddieSpeed + Math.random() * 200)
+            s.body.velocity.setTo(baddieSpeed + Math.random() * (200 + baddieSpeed), baddieSpeed + Math.random() * (200 + baddieSpeed))
             s.scale.setTo(1.75,1.75)
         }
 
@@ -491,21 +491,6 @@ function playerTwoShipGetsHit (ship, baddie) {
     }
 }
 
-function showMainMenu () {
-    titleText.visible = true
-    clickToPlayText.visible = true
-    controllerTextPlayerOne.visible = true
-    controllerTextPlayerTwo.visible = true
-}
-
-function hidingMainMenu () {
-    // titleText.visible = false
-    clickToPlayText.visible = false
-    titleText.visible = false
-    controllerTextPlayerOne.visible = false
-    controllerTextPlayerTwo.visible = false
-}
-
 function screenWrap (sprite) {
 
     if (sprite.x < 0) {
@@ -580,4 +565,18 @@ function createText() {
 
     controllerTextPlayerOne.align = 'center'
     controllerTextPlayerTwo.align = 'center'
+}
+
+function showMainMenu () {
+    titleText.visible = true
+    clickToPlayText.visible = true
+    controllerTextPlayerOne.visible = true
+    controllerTextPlayerTwo.visible = true
+}
+
+function hidingMainMenu () {
+    clickToPlayText.visible = false
+    titleText.visible = false
+    controllerTextPlayerOne.visible = false
+    controllerTextPlayerTwo.visible = false
 }
