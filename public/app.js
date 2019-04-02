@@ -32,7 +32,7 @@ var playerTwoScore = 0
 var playerTwoScoreText
 var gameOverText
 
-var button
+// var button
 
 var playerOneLifeIconOne
 var playerOneLifeIconTwo
@@ -51,34 +51,35 @@ var playerTwoLifeText
 var baddieCount = 0
 var levelCount = 1
 
-var playAgainText
-var rectangle 
+// var playAgainText
+// var rectangle 
 
-var playerOneRectangle
-var playerOneButtonText
-var playerTwoRectangle
-var playerTwoButtonText
+// var playerOneRectangle
+// var playerOneButtonText
+// var playerTwoRectangle
+// var playerTwoButtonText
 
 var playerOneBullets
 var playerOneBulletTime = 0
 var playerTwoBullets
 var playerTwoBulletTime = 0
 
-var clickToStartText 
+// var clickToStartText 
 var resetGameCount = 0
 
 var infoFont
 
+var baddieSpeed
+
 function create() {
 
-    //This will run in Canvas mode, so let's gain a little speed and display
     game.renderer.clearBeforeRender = false
     game.renderer.roundPixels = true
 
-    //We need arcade physics
+    //arcade physics
     game.physics.startSystem(Phaser.Physics.ARCADE)
 
-    //A spacey background
+    //space background
     game.add.tileSprite(0, 0, game.width, game.height, 'space')
 
     //player one bullets
@@ -130,15 +131,14 @@ function create() {
     playerTwoShip.exists = true
 
     //creating the lifes text
-    playerOneLifeText = this.add.text(50, 86, 'Lifes: ', { font: infoFont, fontSize: '32px', fill :'#4d4dff' })
-    // playerOneLifeText.font = infoFont
-    playerTwoLifeText = this.add.text(window.innerWidth - 250,86, 'Lifes: ', { fontSize: '32px', fill: '#4d4dff' })
+    playerOneLifeText = game.add.text(50, 86, 'Lifes: ', { font: infoFont, fontSize: '32px', fill :'#4d4dff' })
+    playerTwoLifeText = game.add.text(window.innerWidth - 250,86, 'Lifes: ', { fontSize: '32px', fill: '#4d4dff' })
     playerTwoLifeText.font = infoFont
 
     //Creating Player Text
-    playerOneText = this.add.text(50,10,'Player One', {fontSize: '32px', fill: '#4d4dff'})
+    playerOneText = game.add.text(50,10,'Player One', {fontSize: '32px', fill: '#4d4dff'})
     playerOneText.font = infoFont
-    playerTwoText = this.add.text(window.innerWidth - 250,10, 'Player Two', { fontSize: '32px', fill: '#4d4dff' })
+    playerTwoText = game.add.text(window.innerWidth - 250,10, 'Player Two', { fontSize: '32px', fill: '#4d4dff' })
     playerTwoText.font = infoFont
 
     //making ship images for lifes
@@ -157,13 +157,13 @@ function create() {
     makeBaddies(levelCount)
 
     //Score text
-    playerOneScoreText = this.add.text(50,45, 'Score: 0', { fontSize: '32px', fill: '#4d4dff'})
+    playerOneScoreText = game.add.text(50,45, 'Score: 0', { fontSize: '32px', fill: '#4d4dff'})
     playerOneScoreText.font = infoFont
-    playerTwoScoreText = this.add.text(window.innerWidth - 250, 45, 'Score: 0', { fontSize: '32px', fill: '#4d4dff'} )
+    playerTwoScoreText = game.add.text(window.innerWidth - 250, 45, 'Score: 0', { fontSize: '32px', fill: '#4d4dff'} )
     playerTwoScoreText.font = infoFont
 
     //game over text
-    gameOverText = this.add.text(game.world.centerX - 200 ,game.world.centerY - 60, '', {fontSize: '60px', fill: '#4d4dff'})
+    gameOverText = game.add.text(game.world.centerX - 200 ,game.world.centerY - 60, '', {fontSize: '60px', fill: '#4d4dff'})
 
     //player One keyboard
     playerOneCursors = game.input.keyboard.createCursorKeys()
@@ -174,20 +174,97 @@ function create() {
 
     //  Player Two Keyboard
     playerTwoCursors = game.input.keyboard.createCursorKeys()
-    game.input.keyboard.addKeyCapture([ Phaser.Keyboard.M ])
+    game.input.keyboard.addKeyCapture([ Phaser.Keyboard.L ])
 
-    // game.input.onDown.add(actionOnClick,this)
-
-    // playAgainText = this.add.text(game.world.centerX - 70, game.world.centerY + 35, '', {fontSize: '23px', fill :'#65737e'})
-
-    // //click to start button
-    // clickToStartText = game.add.text(game.world.centerX - 200, game.world.centerY - 150, '--CLICK TO PLAY AGAIN--', {font: "40px", fill: '#4d4dff', align: 'center' })
-    // clickToStartText.exists = false
-
+    //pausing the game
     game.physics.arcade.isPaused = true
     game.input.onDown.add(actionOnClick,this)
 
 }//create
+
+
+function update() {
+    //player One Movement 
+   if(game.input.keyboard.isDown(Phaser.Keyboard.W)) {
+       game.physics.arcade.accelerationFromRotation(playerOneShip.rotation, 200, playerOneShip.body.acceleration)
+   } else {
+       playerOneShip.body.acceleration.set(0)
+   }
+
+   if (game.input.keyboard.isDown(Phaser.Keyboard.A)) {
+       playerOneShip.body.angularVelocity = -300
+   }
+   else if (game.input.keyboard.isDown(Phaser.Keyboard.D)) {
+       playerOneShip.body.angularVelocity = 300
+   }
+   else {
+       playerOneShip.body.angularVelocity = 0
+   }
+
+   //firing bullets
+   if (game.input.keyboard.isDown(Phaser.Keyboard.F)) {
+       playerOneFireBullet()
+   }
+
+   //player Two movement
+   if (playerTwoCursors.up.isDown) {
+       game.physics.arcade.accelerationFromRotation(playerTwoShip.rotation, 200, playerTwoShip.body.acceleration)
+   }
+   else {
+       playerTwoShip.body.acceleration.set(0)
+   }
+
+   if (playerTwoCursors.left.isDown) {
+       playerTwoShip.body.angularVelocity = -300
+   }
+   else if (playerTwoCursors.right.isDown) {
+       playerTwoShip.body.angularVelocity = 300
+   }
+   else {
+       playerTwoShip.body.angularVelocity = 0
+   }
+
+   //firing bullets
+   if (game.input.keyboard.isDown(Phaser.Keyboard.L)) {
+       playerTwoFireBullet()
+   }
+
+   screenWrap(playerOneShip)
+   //screenWrap for player two
+   screenWrap(playerTwoShip)
+
+   //Screen Wrap for Bullets
+   playerOneBullets.forEachExists(screenWrap, this)
+   playerTwoBullets.forEachExists(screenWrap, this)
+
+   //PLAYER ONE COLLISIONS HANDLERS
+   game.physics.arcade.collide(playerOneBullets, baddies, playerOneCollisionHandler, null, this)
+   //Ship hits baddie
+   game.physics.arcade.collide(baddies, playerOneShip, playerOneShipGetsHit, null, this)
+   
+   //PLAYER TWO COLLISONS HANDLERS
+   game.physics.arcade.collide(playerTwoBullets, baddies, playerTwoCollisionHandler, null, this)
+   //Ship hits baddie
+   game.physics.arcade.collide(baddies, playerTwoShip, playerTwoShipGetsHit, null, this)
+
+
+   if (baddies.countLiving() === 0 && levelCount === 1) {
+       levelCount = levelCount + 1
+       makeBaddies(levelCount)
+   }
+   if (baddies.countLiving() === 0 && levelCount === 2) {
+       levelCount = levelCount + 1
+       makeBaddies(levelCount)
+   } 
+   if (baddies.countLiving() === 0 && levelCount === 3) {
+       levelCount = levelCount + 1
+       makeBaddies(levelCount)
+   }
+   if (baddies.countLiving() === 0 && levelCount === 4) {
+       levelCount = levelCount + 1
+       makeBaddies(levelCount)
+   } 
+}//update
 
 function makeBaddies(levelCount) {
 
@@ -198,43 +275,65 @@ function makeBaddies(levelCount) {
     //baddies per level
     if (levelCount === 1) {
         baddieCount = 0
-        baddieCount = baddieCount + 3
+        baddieCount = baddieCount + 5
+        baddieSpeed = 10
     }
 
     if (levelCount === 2) {
-     baddieCount = baddieCount + 40
-
+     baddieCount = baddieCount + 12
+     baddieSpeed = 20
     }  
 
     if (levelCount === 3) {
-        baddieCount = baddieCount + 30
+        baddieCount = baddieCount + 20
+        baddieSpeed = 25
     }
 
     if (levelCount === 4) {
-        baddieCount = baddieCount + 20
+        baddieCount = baddieCount + 30
+        baddieSpeed = 40
     }
 
     if (levelCount === 5) {
-        baddieCount = baddieCount + 15
+        baddieCount = baddieCount + 50
+        baddieSpeed = 60
     }
 
+    if (levelCount === 6) {
+        baddieCount = baddieCount + 75
+        baddieSpeed = 80
+    }
+    if (levelCount === 7) {
+        baddieCount = baddieCount + 100
+        baddieSpeed = 120
+    }
     for (var i = 0; i < baddieCount; i++) {
         //making baddies pop up random on top 25% of screen
-        var s = baddies.create(game.world.randomX, game.world.randomY / 4, 'baddie')
-        s.name = 'alien' + s
-        s.body.collideWorldBounds = true
-        s.body.bounce.setTo(0.8,0.8)
-        s.body.velocity.setTo(10 + Math.random() * 200, 10 + Math.random() * 200)
-        s.scale.setTo(1.75,1.75)
+        if (levelCount === 1 ) {
+            var s = baddies.create(game.world.randomX, game.world.randomY / 4, 'baddie')
+            s.name = 'alien' + s
+            s.body.collideWorldBounds = true
+            s.body.bounce.setTo(0.8,0.8)
+            s.body.velocity.setTo(baddieSpeed + Math.random() * 200, baddieSpeed + Math.random() * 200)
+            s.scale.setTo(1.75,1.75)
+        } else if (levelCount > 1) {
+            var s = baddies.create(game.world.randomX, (game.world.randomY / (Math.floor(Math.random() * 6))), 'baddie')
+            s.name = 'alien' + s
+            s.body.collideWorldBounds = true
+            s.body.bounce.setTo(0.8,0.8)
+            s.body.velocity.setTo(baddieSpeed + Math.random() * 200, baddieSpeed + Math.random() * 200)
+            s.scale.setTo(1.75,1.75)
+        }
+
 
     } //for loop
-}
+
+}//make baddies
 
 function actionOnClick () {
     hidingMainMenu()
     resetGame()
 }
-
 
 function resetGame() {
     //Resetting Player One Score and Text
@@ -277,96 +376,11 @@ function resetGame() {
     playerOneLifeIconThree.visible = true
 
     playerTwoLifeIconOne.visible = true
-    // playerTwoLifeIconOne.tint = 1 * 0x4c4cff 
     playerTwoLifeIconTwo.visible = true
-    // playerTwoLifeIconTwo.tint = 1 * 0x4c4cff 
     playerTwoLifeIconThree.visible = true
-    // playerTwoLifeIconThree.tint = 1 * 0x4c4cff 
     }
 }
 
-function update() {
-     //player One Movement 
-    if(game.input.keyboard.isDown(Phaser.Keyboard.W)) {
-        game.physics.arcade.accelerationFromRotation(playerOneShip.rotation, 200, playerOneShip.body.acceleration)
-    } else {
-        playerOneShip.body.acceleration.set(0)
-    }
-
-    if (game.input.keyboard.isDown(Phaser.Keyboard.A)) {
-        playerOneShip.body.angularVelocity = -300
-    }
-    else if (game.input.keyboard.isDown(Phaser.Keyboard.D)) {
-        playerOneShip.body.angularVelocity = 300
-    }
-    else {
-        playerOneShip.body.angularVelocity = 0
-    }
-
-    //firing bullets
-    if (game.input.keyboard.isDown(Phaser.Keyboard.F)) {
-        playerOneFireBullet()
-    }
-
-    //player Two movement
-    if (playerTwoCursors.up.isDown) {
-        game.physics.arcade.accelerationFromRotation(playerTwoShip.rotation, 200, playerTwoShip.body.acceleration)
-    }
-    else {
-        playerTwoShip.body.acceleration.set(0)
-    }
-
-    if (playerTwoCursors.left.isDown) {
-        playerTwoShip.body.angularVelocity = -300
-    }
-    else if (playerTwoCursors.right.isDown) {
-        playerTwoShip.body.angularVelocity = 300
-    }
-    else {
-        playerTwoShip.body.angularVelocity = 0
-    }
-
-    //firing bullets
-    if (game.input.keyboard.isDown(Phaser.Keyboard.M)) {
-        playerTwoFireBullet()
-    }
-
-    screenWrap(playerOneShip)
-    //screenWrap for player two
-    screenWrap(playerTwoShip)
-
-    //Screen Wrap for Bullets
-    playerOneBullets.forEachExists(screenWrap, this)
-    playerTwoBullets.forEachExists(screenWrap, this)
- 
-    //PLAYER ONE COLLISIONS HANDLERS
-    game.physics.arcade.collide(playerOneBullets, baddies, playerOneCollisionHandler, null, this)
-    //Ship hits baddie
-    game.physics.arcade.collide(baddies, playerOneShip, playerOneShipGetsHit, null, this)
-    
-    //PLAYER TWO COLLISONS HANDLERS
-    game.physics.arcade.collide(playerTwoBullets, baddies, playerTwoCollisionHandler, null, this)
-    //Ship hits baddie
-    game.physics.arcade.collide(baddies, playerTwoShip, playerTwoShipGetsHit, null, this)
-
-
-    if (baddies.countLiving() === 0 && levelCount === 1) {
-        levelCount = levelCount + 1
-        makeBaddies(levelCount)
-    }
-    if (baddies.countLiving() === 0 && levelCount === 2) {
-        levelCount = levelCount + 1
-        makeBaddies(levelCount)
-    } 
-    if (baddies.countLiving() === 0 && levelCount === 3) {
-        levelCount = levelCount + 1
-        makeBaddies(levelCount)
-    }
-    if (baddies.countLiving() === 0 && levelCount === 4) {
-        levelCount = levelCount + 1
-        makeBaddies(levelCount)
-    } 
-}
 
 function playerOneFireBullet () {
 
