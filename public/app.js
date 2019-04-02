@@ -69,57 +69,6 @@ var resetGameCount = 0
 
 var infoFont
 
-function createText() {
-
-    titleText = game.add.text(game.world.centerX, game.world.centerY - 175, "- SPACE SHOOTERS -");
-    titleText.anchor.setTo(0.5);
-
-    titleText.font = 'Press Start 2P';
-    titleText.fontSize = 60;
-
-    //  x0, y0 - x1, y1
-    grd = titleText.context.createLinearGradient(0, 0, 0, titleText.canvas.height);
-    grd.addColorStop(0, '#4d4dff');   
-    grd.addColorStop(1, '#004CB3');
-    titleText.fill = grd;
-
-    titleText.align = 'center';
-    titleText.stroke = '#fff';
-    titleText.strokeThickness = 1;
-    titleText.setShadow(3, 3, '#fff', 1);
-
-
-    //game instructions
-    controllerTextPlayerOne = game.add.text(game.world.centerX - (window.innerWidth / 4), game.world.centerY + 150, 'PLAYER ONE\nW - UP\nA - LEFT\nD - RIGHT\nF - SHOOT')
-    controllerTextPlayerTwo = game.add.text(game.world.centerX + (window.innerWidth / 4), game.world.centerY + 150, 'PLAYER TWO\n^ - UP\n> - RIGHT\n< - LEFT\nM - SHOOT')
-    controllerTextPlayerOne.anchor.setTo(0.5)
-    controllerTextPlayerTwo.anchor.setTo(0.5)
-    controllerTextPlayerOne.font = 'Audiowide'
-    controllerTextPlayerOne.fontSize = 35
-
-    controllerTextPlayerTwo.font = 'Audiowide'
-    controllerTextPlayerTwo.fontSize = 35
-
-    controllerTextPlayerOne.fill = '#fff'
-    controllerTextPlayerTwo.fill = '#fff'
-
-}
-
-
-WebFontConfig = {
-
-    //  'active' means all requested fonts have finished loading
-    //  We set a 1 second delay before calling 'createText'.
-    //  For some reason if we don't the browser cannot render the text the first time it's created.
-    active: function() { game.time.events.add(Phaser.Timer.SECOND, createText, this); },
-
-    //  The Google Fonts we want to load (specify as many as you like in the array)
-    google: {
-      families: ['Press Start 2P', 'Audiowide']
-    }
-
-};
-
 function create() {
 
     //This will run in Canvas mode, so let's gain a little speed and display
@@ -229,11 +178,11 @@ function create() {
 
     // game.input.onDown.add(actionOnClick,this)
 
-    playAgainText = this.add.text(game.world.centerX - 70, game.world.centerY + 35, '', {fontSize: '23px', fill :'#65737e'})
+    // playAgainText = this.add.text(game.world.centerX - 70, game.world.centerY + 35, '', {fontSize: '23px', fill :'#65737e'})
 
-    //click to start button
-    clickToStartText = game.add.text(game.world.centerX - 200, game.world.centerY - 150, '--CLICK TO PLAY AGAIN--', {font: "40px", fill: '#4d4dff', align: 'center' })
-    clickToStartText.exists = false
+    // //click to start button
+    // clickToStartText = game.add.text(game.world.centerX - 200, game.world.centerY - 150, '--CLICK TO PLAY AGAIN--', {font: "40px", fill: '#4d4dff', align: 'center' })
+    // clickToStartText.exists = false
 
     game.physics.arcade.isPaused = true
     game.input.onDown.add(actionOnClick,this)
@@ -282,9 +231,10 @@ function makeBaddies(levelCount) {
 }
 
 function actionOnClick () {
-    clickToStartText.visible = true
+    hidingMainMenu()
     resetGame()
 }
+
 
 function resetGame() {
     //Resetting Player One Score and Text
@@ -301,7 +251,7 @@ function resetGame() {
     levelCount = 1
 
     gameOverText.setText('')
-    playAgainText.setText('')
+    titleText.visibls
 
     baddies.kill()
 
@@ -333,8 +283,6 @@ function resetGame() {
     playerTwoLifeIconThree.visible = true
     // playerTwoLifeIconThree.tint = 1 * 0x4c4cff 
     }
-
-
 }
 
 function update() {
@@ -480,7 +428,7 @@ function playerOneShipGetsHit (ship, baddie) {
     if (playerOneLifes === 3) {
         playerOneLifes = 2
         playerOneLifeIconOne.visible = false
-            // return lifes
+        // return lifes
     }else if (playerOneLifes === 2) {
         playerOneLifes = 1
         playerOneLifeIconTwo.visible = false
@@ -494,14 +442,10 @@ function playerOneShipGetsHit (ship, baddie) {
         //ship one gets killed
         playerOneShip.kill()
 
-        //showing GAME OVER
-        gameOverText.setText('GAME OVER!!!')
-        clickToStartText.visible = true
-        clickToStartText.setText('CLICK TO PLAY AGAIN')
+        showMainMenu()
+
         levelCount = 1
         baddies.kill()
-
-        // playerOneShip.anchor.set(0.5, 0.5)
 
     }
 }
@@ -527,15 +471,25 @@ function playerTwoShipGetsHit (ship, baddie) {
         //ship one gets killed
         playerTwoShip.kill()
 
-        //showing GAME OVER
-        gameOverText.setText('GAME OVER!!!')
-        clickToStartText.visible = true
-
-        clickToStartText.setText('CLICK TO PLAY AGAIN')
+        showMainMenu()
 
         levelCount = 1
         baddies.kill()
     }
+}
+
+function showMainMenu () {
+    titleText.visible = true
+    clickToPlayText.visible = true
+    controllerTextPlayerOne.visible = true
+    controllerTextPlayerTwo.visible = true
+}
+
+function hidingMainMenu () {
+    titleText.visible = false
+    clickToPlayText.visible = false
+    controllerTextPlayerOne.visible = false
+    controllerTextPlayerTwo.visible = false
 }
 
 function screenWrap (sprite) {
@@ -557,4 +511,59 @@ function screenWrap (sprite) {
 }
 
 function render() {
+}
+
+//loading Google Fonts
+WebFontConfig = {
+    active: function() { game.time.events.add(Phaser.Timer.SECOND, createText, this); },
+    //  The Google Fonts we want to load (specify as many as you like in the array)
+    google: {
+      families: ['Press Start 2P', 'Audiowide']
+    }
+}
+
+function createText() {
+
+    //title text
+    titleText = game.add.text(game.world.centerX, game.world.centerY - 175, "- SPACE SHOOTERS -")
+    titleText.anchor.setTo(0.5)
+
+    titleText.font = 'Press Start 2P'
+    titleText.fontSize = 100
+
+    //  x0, y0 - x1, y1
+    grd = titleText.context.createLinearGradient(0, 0, 0, titleText.canvas.height);
+    grd.addColorStop(0, '#4d4dff');   
+    grd.addColorStop(1, '#004CB3');
+    titleText.fill = grd;
+
+    titleText.align = 'center';
+    titleText.stroke = '#fff';
+    titleText.strokeThickness = 1;
+    titleText.setShadow(3, 3, '#fff', 1);
+
+    //click to play text
+    clickToPlayText = game.add.text(game.world.centerX, game.world.centerY - 70, "- CLICK TO PLAY -")
+    clickToPlayText.anchor.setTo(0.5)
+
+    clickToPlayText.font = 'Audiowide'
+    clickToPlayText.fontSize = 60
+    clickToPlayText.fill = '#fff'
+
+    //game instructions
+    controllerTextPlayerOne = game.add.text(game.world.centerX - (window.innerWidth / 4), game.world.centerY + 150, 'PLAYER ONE\nW - UP\nA - LEFT\nD - RIGHT\nF - SHOOT')
+    controllerTextPlayerTwo = game.add.text(game.world.centerX + (window.innerWidth / 4), game.world.centerY + 150, 'PLAYER TWO\n^ - UP\n> - RIGHT\n< - LEFT\nM - SHOOT')
+    controllerTextPlayerOne.anchor.setTo(0.5)
+    controllerTextPlayerTwo.anchor.setTo(0.5)
+    controllerTextPlayerOne.font = 'Audiowide'
+    controllerTextPlayerOne.fontSize = 45
+
+    controllerTextPlayerTwo.font = 'Audiowide'
+    controllerTextPlayerTwo.fontSize = 45
+
+    controllerTextPlayerOne.fill = '#fff'
+    controllerTextPlayerTwo.fill = '#fff'
+
+    controllerTextPlayerOne.align = 'center'
+    controllerTextPlayerTwo.align = 'center'
 }
