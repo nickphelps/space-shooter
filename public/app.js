@@ -51,25 +51,18 @@ var playerTwoLifeText
 var baddieCount = 0
 var levelCount = 1
 
-// var playAgainText
-// var rectangle 
-
-// var playerOneRectangle
-// var playerOneButtonText
-// var playerTwoRectangle
-// var playerTwoButtonText
-
 var playerOneBullets
 var playerOneBulletTime = 0
 var playerTwoBullets
 var playerTwoBulletTime = 0
 
-// var clickToStartText 
 var resetGameCount = 0
 
 var infoFont
 
 var baddieSpeed
+
+var levelIndicatorText
 
 function create() {
 
@@ -180,6 +173,11 @@ function create() {
     game.physics.arcade.isPaused = true
     game.input.onDown.add(actionOnClick,this)
 
+    levelIndicatorText = game.add.text(game.world.centerX,game.world.centerY, '')
+    levelIndicatorText.fontSize = 60
+
+    levelIndicatorText.font = 'Press Start 2P'
+
 }//create
 
 
@@ -249,7 +247,8 @@ function update() {
 
 
    if (baddies.countLiving() === 0 && levelCount === 1) {
-       levelCount = levelCount + 1
+       levelCount = levelCount + 2
+
        makeBaddies(levelCount)
    }
    if (baddies.countLiving() === 0 && levelCount === 2) {
@@ -266,11 +265,14 @@ function update() {
    } 
 }//update
 
+
 function makeBaddies(levelCount) {
 
     baddies = game.add.group()
     baddies.enableBody = true
     baddies.exists = true
+
+    console.log(levelCount)
 
     //baddies per level
     if (levelCount === 1) {
@@ -384,7 +386,6 @@ function resetGame() {
 
 function playerOneFireBullet () {
 
-    console.log(playerOneBullets)
     //logic for fire bullets for each ship
     if (game.time.now > playerOneBulletTime) {
         bullet = playerOneBullets.getFirstExists(false)
@@ -438,7 +439,6 @@ function playerTwoCollisionHandler (bullet, baddie) {
 
 function playerOneShipGetsHit (ship, baddie) {
 
-    // console.log(playerOneLifes)
     if (playerOneLifes === 3) {
         playerOneLifes = 2
         playerOneLifeIconOne.visible = false
@@ -466,7 +466,6 @@ function playerOneShipGetsHit (ship, baddie) {
 
 function playerTwoShipGetsHit (ship, baddie) {
 
-    console.log(playerTwoLifeIconTwo)
     if (playerTwoLifes == 3) {
         playerTwoLifes = 2
         playerTwoLifeIconOne.visible = false
@@ -500,8 +499,9 @@ function showMainMenu () {
 }
 
 function hidingMainMenu () {
-    titleText.visible = false
+    // titleText.visible = false
     clickToPlayText.visible = false
+    titleText.visible = false
     controllerTextPlayerOne.visible = false
     controllerTextPlayerTwo.visible = false
 }
