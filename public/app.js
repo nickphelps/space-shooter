@@ -551,7 +551,7 @@ function createText() {
 
     //game instructions
     controllerTextPlayerOne = game.add.text(game.world.centerX - (window.innerWidth / 4), game.world.centerY + 150, 'PLAYER ONE\nW - UP\nA - LEFT\nD - RIGHT\nF - SHOOT')
-    controllerTextPlayerTwo = game.add.text(game.world.centerX + (window.innerWidth / 4), game.world.centerY + 150, 'PLAYER TWO\n^ - UP\n> - RIGHT\n< - LEFT\nM - SHOOT')
+    controllerTextPlayerTwo = game.add.text(game.world.centerX + (window.innerWidth / 4), game.world.centerY + 150, 'PLAYER TWO\n^ - UP\n> - RIGHT\n< - LEFT\nL - SHOOT')
     controllerTextPlayerOne.anchor.setTo(0.5)
     controllerTextPlayerTwo.anchor.setTo(0.5)
     controllerTextPlayerOne.font = 'Audiowide'
