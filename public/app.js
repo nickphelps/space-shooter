@@ -540,7 +540,7 @@ function createText() {
     titleText.anchor.setTo(0.5)
 
     titleText.font = 'Press Start 2P'
-    titleText.fontSize = 100
+    titleText.fontSize = 75
 
     //  x0, y0 - x1, y1
     grd = titleText.context.createLinearGradient(0, 0, 0, titleText.canvas.height);
